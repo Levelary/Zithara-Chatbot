@@ -5,7 +5,7 @@ import {
   getChatsByUserId,
   sendMessage,
   updateChatNameController,
-} from "../../../store/chat/ChatSlice";
+} from "@/store/chat/ChatSlice";
 
 const useChat = () => {
   const [input, setInput] = useState("");

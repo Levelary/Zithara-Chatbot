@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl } from "../../common/constants";
+import { baseUrl } from "@/common/constants";
 export const getChatsByUserId = async (userId) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -108,7 +108,6 @@ export const createNewChat = async (data) => {
   }
 };
 
-
 export const updateChatNameController = async (chatId, chatName) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -134,4 +133,4 @@ export const updateChatNameController = async (chatId, chatName) => {
     console.error("Error updating chat name:", error);
     throw error;
   }
-}
+};

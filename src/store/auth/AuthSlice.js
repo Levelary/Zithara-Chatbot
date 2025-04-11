@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl } from "../../common/constants";
+import { baseUrl } from "@/common/constants";
 
 export const loginController = async (data) => {
   try {
