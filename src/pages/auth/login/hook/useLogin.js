@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginController } from "@/store/Auth/AuthSlice";
+import { loginController } from "@/store/auth/AuthSlice";
 
 const useLogin = () => {
   // Loading State
