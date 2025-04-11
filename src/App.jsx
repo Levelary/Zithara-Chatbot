@@ -1,7 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import Chat from "./pages/chat-page/Chat";
-import SignUp from "./pages/auth/signup/SignUp";
-import Login from "./pages/auth/login/Login";
+const Chat = React.lazy(() => import("./pages/chat-page/Chat"));
+const SignUp = React.lazy(() => import("./pages/auth/signup/SignUp"));
+const Login = React.lazy(() => import("./pages/auth/login/Login"));
 
 function App() {
   const isLoggedIn = localStorage.getItem("userDetails");
