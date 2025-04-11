@@ -30,6 +30,8 @@ const Chat = () => {
     // Chat Data
     chats,
     selectedChat,
+    setSelectedChat,
+
     formatMessage,
     chatName,
     setChatName,
@@ -37,7 +39,11 @@ const Chat = () => {
     isSending,
     createChat,
     isCreating,
+    updateChatName,
+    changeChat,
   } = useChat();
+
+  console.log(selectedChat);
 
   return (
     <PageContainer title={"Chat"}>
@@ -82,6 +88,7 @@ const Chat = () => {
                   <TextField
                     value={chatName}
                     onChange={(e) => setChatName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && updateChatName()}
                     variant="standard"
                     InputProps={{
                       disableUnderline: true,
@@ -101,6 +108,10 @@ const Chat = () => {
                     options={chats.map((chat) => {
                       return { label: chat.chat_name, id: chat.chat_id };
                     })}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(event, newValue) => {
+                      changeChat(newValue);
+                    }}
                     size="small"
                     renderInput={(params) => (
                       <TextField

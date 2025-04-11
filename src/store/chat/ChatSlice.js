@@ -107,3 +107,31 @@ export const createNewChat = async (data) => {
     throw error;
   }
 };
+
+
+export const updateChatNameController = async (chatId, chatName) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("Access token is missing in localStorage.");
+    }
+
+    const response = await axios.put(
+      `${baseUrl}/chat/${chatId}`,
+      { chat_name: chatName },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    console.log(response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating chat name:", error);
+    throw error;
+  }
+}

@@ -4,6 +4,7 @@ import {
   fetchChatMessages,
   getChatsByUserId,
   sendMessage,
+  updateChatNameController,
 } from "../../../store/chat/ChatSlice";
 
 const useChat = () => {
@@ -71,9 +72,9 @@ const useChat = () => {
       setLoading(true);
       const response = await getChatsByUserId(userDetails.user_id);
       console.log(response);
-      setChats(response.data.slice(1, response.data.length));
-      setChatName(response.data[0].chat_name);
-      setSelectedChat(response.data[0]);
+      setChats(response.data);
+      setChatName(response.data[response.data.length - 1].chat_name);
+      setSelectedChat(response.data[response.data.length - 1]);
       const msgs = await fetchChatMessages(
         response.data[response.data.length - 1].chat_id
       );
@@ -141,6 +142,34 @@ const useChat = () => {
     }
   };
 
+  // Function to change the chat name
+  const updateChatName = async () => {
+    try {
+      const response = await updateChatNameController(
+        selectedChat.chat_id,
+        chatName
+      );
+      console.log(response);
+      setChats((prev) =>
+        prev.map((chat) =>
+          chat.chat_id === selectedChat.chat_id
+            ? { ...chat, chat_name: chatName }
+            : chat
+        )
+      );
+    } catch (error) {
+      console.error("Error updating chat name:", error);
+    }
+  };
+
+  // Function to change chat
+  const changeChat = async (newValue) => {
+    setSelectedChat(chats.find((chat) => chat.chat_id === newValue.id));
+    setChatName(newValue.label);
+    const msgs = await fetchChatMessages(newValue.id);
+    setMessages(msgs.data);
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -162,6 +191,7 @@ const useChat = () => {
     // Chat data
     chats,
     selectedChat,
+    setSelectedChat,
     formatMessage,
     chatName,
     setChatName,
@@ -169,6 +199,8 @@ const useChat = () => {
     isSending,
     createChat,
     isCreating,
+    updateChatName,
+    changeChat,
   };
 };
 
