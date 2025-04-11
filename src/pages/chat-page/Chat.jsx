@@ -1,17 +1,31 @@
-import React, { useState } from "react";
 import PageContainer from "../../components/PageContainer";
-import { Box, TextField, Typography, Button, Divider } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  IconButton,
+  Autocomplete,
+  Tooltip,
+} from "@mui/material";
+import useChat from "./hook/useChat";
+import AddIcon from "@mui/icons-material/Add";
+import SentimentSatisfiedAlt from "@mui/icons-material/SentimentSatisfiedAlt";
+import EmojiPicker from "emoji-picker-react";
 
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-
-  const handleSend = () => {
-    if (input.trim() !== "") {
-      setMessages((prev) => [...prev, input]);
-      setInput("");
-    }
-  };
+  const {
+    messages,
+    input,
+    setInput,
+    handleSend,
+    chatName,
+    setChatName,
+    showEmojiPicker,
+    setShowEmojiPicker,
+    onEmojiClick,
+    messagesEndRef,
+  } = useChat();
 
   return (
     <PageContainer title={"Chat"}>
@@ -27,11 +41,96 @@ const Chat = () => {
           flexDirection={"column"}
           justifyContent={"space-between"}
           alignItems={"center"}
-          //   border={"1px solid black"}
           height={"100%"}
           p={2}
         >
           {/* Header */}
+          <Box
+            width="100%"
+            py={2}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            borderBottom="1px solid #ccc"
+            px={3}
+            mb={2}
+          >
+            <Box>
+              <TextField
+                value={chatName}
+                onChange={(e) => setChatName(e.target.value)}
+                variant="standard"
+                InputProps={{
+                  disableUnderline: true,
+                }}
+                sx={{
+                  input: {
+                    color: "gray",
+                    fontSize: "1.2rem",
+                    fontWeight: "500",
+                  },
+                }}
+              />
+            </Box>
+
+            <Box display="flex" gap={2} alignItems="center">
+              <Autocomplete
+                options={[]}
+                size="small"
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Search by chat name..."
+                    variant="outlined"
+                    sx={{
+                      borderRadius: 5,
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ccc",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#999",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#666",
+                        },
+                      },
+                      input: { color: "#000" },
+                    }}
+                  />
+                )}
+                sx={{ width: 250 }}
+              />
+            </Box>
+
+            <Box>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{
+                  backgroundColor: "#0056b3",
+                  border: "none",
+                  width: "fit-content",
+                  padding: "10px 20px",
+                  fontFamily: "Poppins",
+                  "&:hover": {
+                    backgroundColor: "#004a99",
+                    border: "none",
+                  },
+                  "&:focus": {
+                    outline: "none",
+                    boxShadow: "none",
+                  },
+                  "&:active": {
+                    outline: "none",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                New
+              </Button>
+            </Box>
+          </Box>
 
           {/* Body */}
           <Box
@@ -42,19 +141,23 @@ const Chat = () => {
             flexDirection="column"
             gap={1}
             p={2}
-            border="1px solid #ddd"
+            border="1px solid #ccc"
             borderRadius="8px"
             my={2}
+            position="relative"
           >
-            <Box width="100%" py={2}>
-              <Typography variant="h5" color="#ddd">
-                Chat Interface
-              </Typography>
-              <Divider />
-            </Box>
             {messages.length === 0 ? (
-              <Typography variant="body2" color="gray" textAlign="center">
-                No messages yet.
+              <Typography
+                color="gray"
+                textAlign="center"
+                fontSize={"1.5rem"}
+                fontWeight={600}
+                height={"100%"}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                Hi! What can I help with?
               </Typography>
             ) : (
               messages.map((msg, index) => (
@@ -71,20 +174,62 @@ const Chat = () => {
                 </Box>
               ))
             )}
+            <div ref={messagesEndRef} />
           </Box>
 
           {/* Footer */}
-          <Box width="100%" display="flex" gap={2}>
-            <TextField
-              fullWidth
-              placeholder="Type a message..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            />
-            <Button variant="contained" onClick={handleSend}>
-              Send
-            </Button>
+          <Box width="100%" display="flex" flexDirection="column" gap={1}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Tooltip title="Insert Emoji">
+                <IconButton onClick={() => setShowEmojiPicker((prev) => !prev)}>
+                  <SentimentSatisfiedAlt />
+                </IconButton>
+              </Tooltip>
+              <TextField
+                fullWidth
+                placeholder="Type a message..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#0056b3",
+                  border: "none",
+                  width: "fit-content",
+                  padding: "10px 20px",
+                  fontFamily: "Poppins",
+                  "&:hover": {
+                    backgroundColor: "#004a99",
+                    border: "none",
+                  },
+                  "&:focus": {
+                    outline: "none",
+                    boxShadow: "none",
+                  },
+                  "&:active": {
+                    outline: "none",
+                    boxShadow: "none",
+                  },
+                }}
+                onClick={handleSend}
+              >
+                Send
+              </Button>
+            </Box>
+            {showEmojiPicker && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: "70px",
+                  left: "10px",
+                  zIndex: 1000,
+                }}
+              >
+                <EmojiPicker onEmojiClick={onEmojiClick} />
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
