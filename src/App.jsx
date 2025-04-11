@@ -1,3 +1,4 @@
+import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 const Chat = React.lazy(() => import("./pages/chat-page/Chat"));
 const SignUp = React.lazy(() => import("./pages/auth/signup/SignUp"));
